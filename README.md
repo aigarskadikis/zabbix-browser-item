@@ -1,4 +1,4 @@
-# Notes on use Zabbix Browser item
+# Notes on how use Browser item in Zabbix 7.0
 
 Launch a single browser via docker:
 ```
@@ -48,7 +48,7 @@ To use PuTTY inside appliance, possibly need to start SSH daemon
 systemctl start sshd
 ```
 
-Do not install/use docker inside appliance. It does not work (at least with VirtualBox on Windows with NAT connection). The browser host must be on another server!
+Do not install/use docker inside appliance. It does not work (at least with VirtualBox on Windows with NAT connection). (fails to resolve DNS). The browser host must be on another server!
 
 Inside appliance, test connection to browser:
 ```
@@ -68,7 +68,8 @@ https://hub.docker.com/u/selenium
 
 # Q & A
 
-Q: Can we send screenshots via email
+Q: Is it possible to send a screenshots via email
+
 A: No
 
 
