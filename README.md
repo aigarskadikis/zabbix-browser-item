@@ -48,7 +48,9 @@ To use PuTTY inside appliance, possibly need to start SSH daemon
 systemctl start sshd
 ```
 
-Do not install/use docker inside appliance. It does not work (at least with VirtualBox on Windows with NAT connection). (fails to resolve DNS). The browser host must be on another server!
+BTW, SSH comes up automatically after 5m. Just need to wait.
+
+Do not install/use docker inside appliance. It does not work (at least with VirtualBox on Windows with NAT connection). (while using the Browser item it fails to resolve DNS). The browser host must be on another server!
 
 Inside appliance, test connection to browser:
 ```

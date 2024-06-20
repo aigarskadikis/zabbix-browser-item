@@ -123,28 +123,6 @@ zabbix_export:
                 - $.performance_data
           master_item:
             key: page3
-        - uuid: f50dcf8f88914792aa4195ae1bd5ab48
-          name: response_status1
-          type: DEPENDENT
-          key: response_status1
-          delay: '0'
-          preprocessing:
-            - type: JSONPATH
-              parameters:
-                - '$.details[0].navigation.response_status'
-          master_item:
-            key: pd1
-        - uuid: 5085a5c6c6974c1b986530741b4a0d28
-          name: response_status2
-          type: DEPENDENT
-          key: response_status2
-          delay: '0'
-          preprocessing:
-            - type: JSONPATH
-              parameters:
-                - '$.details[0].navigation.response_status'
-          master_item:
-            key: pd2
         - uuid: 1402a13827094064942c738fdbf0ba26
           name: screen1
           type: DEPENDENT
