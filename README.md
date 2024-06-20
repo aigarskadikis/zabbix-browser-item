@@ -1,4 +1,4 @@
-# Notes on how use Browser item in Zabbix 7.0
+# Notes on how to use Browser item in Zabbix 7.0
 
 Launch a single browser via docker:
 ```
