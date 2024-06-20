@@ -1,0 +1,38 @@
+zabbix_export:
+  version: '7.0'
+  host_groups:
+    - uuid: 80ae5b1e28a941b88492ad222ee385eb
+      name: 'Web monitoring'
+  hosts:
+    - host: 'example 2'
+      name: 'example 2'
+      status: DISABLED
+      templates:
+        - name: 'example 2 - get stats from 3 pages'
+      groups:
+        - name: 'Web monitoring'
+      inventory_mode: DISABLED
+    - host: 'example 3'
+      name: 'example 3'
+      status: DISABLED
+      templates:
+        - name: 'example 3 - monitor all unique links in landing page'
+      groups:
+        - name: 'Web monitoring'
+      inventory_mode: DISABLED
+    - host: 'example 4'
+      name: 'example 4'
+      status: DISABLED
+      templates:
+        - name: 'example 4 - fill fields and push a button'
+      groups:
+        - name: 'Web monitoring'
+      inventory_mode: DISABLED
+    - host: 'example 5'
+      name: 'example 5'
+      status: DISABLED
+      templates:
+        - name: 'example 5 - search for string'
+      groups:
+        - name: 'Web monitoring'
+      inventory_mode: DISABLED

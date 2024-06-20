@@ -40,19 +40,12 @@ If nothing else is listening on port 80 and 22, we can link SSH and HTTP to 127.
 
 Install more tools on appliance:
 ```
-dnf -y install jq zabbix-js nc
+dnf -y install vim jq zabbix-js nc
 ```
 
-To use PuTTY inside appliance, possibly need to start SSH daemon
-```
-systemctl start sshd
-```
+Do not install/use docker inside appliance. It does not work (at least with VirtualBox with NAT connection). Problem is to resolve DNS inside container. The web browser must run on another server!
 
-BTW, SSH comes up automatically after 5m. Just need to wait.
-
-Do not install/use docker inside appliance. It does not work (at least with VirtualBox on Windows with NAT connection). (while using the Browser item it fails to resolve DNS). The browser host must be on another server!
-
-Inside appliance, test connection to browser:
+Inside appliance, test connection to docker host which runs the browser:
 ```
 nc -zv 192.168.88.59 4444
 ```

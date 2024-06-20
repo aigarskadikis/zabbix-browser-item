@@ -5,7 +5,7 @@ zabbix_export:
       name: Templates/Modules
   templates:
     - uuid: 04aceac553204efca60d4412e79b453c
-      template: 'example 2 - get stats from 3 pages'
+      template: ex2
       name: 'example 2 - get stats from 3 pages'
       groups:
         - name: Templates/Modules
@@ -182,7 +182,7 @@ zabbix_export:
                     - type: ITEM
                       name: columns.0.itemid
                       value:
-                        host: 'example 2 - get stats from 3 pages'
+                        host: ex2
                         key: screen1
                     - type: STRING
                       name: columns.0.name
@@ -208,7 +208,7 @@ zabbix_export:
                     - type: ITEM
                       name: columns.0.itemid
                       value:
-                        host: 'example 2 - get stats from 3 pages'
+                        host: ex2
                         key: screen2
                     - type: STRING
                       name: columns.0.name
@@ -234,7 +234,7 @@ zabbix_export:
                     - type: ITEM
                       name: columns.0.itemid
                       value:
-                        host: 'example 2 - get stats from 3 pages'
+                        host: ex2
                         key: screen3
                     - type: STRING
                       name: columns.0.name
@@ -252,7 +252,7 @@ zabbix_export:
                       name: show_timestamp
                       value: '1'
     - uuid: 5db4859193fc49cca9ea2f2f71c8bb3e
-      template: 'example 3 - monitor all unique links in landing page'
+      template: ex3
       name: 'example 3 - monitor all unique links in landing page'
       groups:
         - name: Templates/Modules
@@ -355,7 +355,7 @@ zabbix_export:
         - macro: '{$SCHEMA}'
           value: https
     - uuid: 7b60277c56c540a8bc60465a7bc0d55f
-      template: 'example 4 - fill fields and push a button'
+      template: ex4
       name: 'example 4 - fill fields and push a button'
       groups:
         - name: Templates/Modules
@@ -532,7 +532,7 @@ zabbix_export:
                     - type: ITEM
                       name: columns.0.itemid
                       value:
-                        host: 'example 4 - fill fields and push a button'
+                        host: ex4
                         key: step1
                     - type: STRING
                       name: columns.0.name
@@ -558,7 +558,7 @@ zabbix_export:
                     - type: ITEM
                       name: columns.0.itemid
                       value:
-                        host: 'example 4 - fill fields and push a button'
+                        host: ex4
                         key: step2
                     - type: STRING
                       name: columns.0.name
@@ -584,7 +584,7 @@ zabbix_export:
                     - type: ITEM
                       name: columns.0.itemid
                       value:
-                        host: 'example 4 - fill fields and push a button'
+                        host: ex4
                         key: step3
                     - type: STRING
                       name: columns.0.name
@@ -610,7 +610,7 @@ zabbix_export:
                     - type: ITEM
                       name: columns.0.itemid
                       value:
-                        host: 'example 4 - fill fields and push a button'
+                        host: ex4
                         key: step4
                     - type: STRING
                       name: columns.0.name
@@ -628,7 +628,7 @@ zabbix_export:
                       name: show_timestamp
                       value: '1'
     - uuid: 846a0613d8eb4561b41038e76dadc375
-      template: 'example 5 - search for string'
+      template: ex5
       name: 'example 5 - search for string'
       groups:
         - name: Templates/Modules
