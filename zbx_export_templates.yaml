@@ -1,0 +1,773 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: 57b7ae836ca64446ba2c296389c009b7
+      name: Templates/Modules
+  templates:
+    - uuid: 04aceac553204efca60d4412e79b453c
+      template: 'example 2 - get stats from 3 pages'
+      name: 'example 2 - get stats from 3 pages'
+      groups:
+        - name: Templates/Modules
+      items:
+        - uuid: 031f692c58b7434895bf0e6d83551c53
+          name: all
+          type: BROWSER
+          key: all
+          delay: 1d
+          trends: '0'
+          value_type: TEXT
+          params: |
+            var params = JSON.parse(value);
+            var browser = new Browser(Browser.chromeOptions());
+            var page = params.pages.split("|");
+            var full = [];
+            const screenshot = '';
+            browser.setScreenSize(Number(1280), Number(720));
+            for (i = 0; i < page.length; i++) {
+                row = {};
+                browser.navigate(params.schema + '://' + params.domain + '/' + page[i]);
+                browser.collectPerfEntries(page[i]);
+                screenshot = browser.getScreenshot();
+                const result = browser.getResult();
+                result.screenshot = screenshot;
+                row = result;
+                full.push(row);
+            }
+            return JSON.stringify(full);
+          parameters:
+            - name: domain
+              value: '{$DOMAIN}'
+            - name: pages
+              value: '{$PAGES}'
+            - name: schema
+              value: '{$SCHEMA}'
+        - uuid: 77319d8bec9c4a11a5f5609c7c2822e2
+          name: page1
+          type: DEPENDENT
+          key: page1
+          delay: '0'
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[0]'
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: all
+        - uuid: 9d19fbaa4aab4fe6bec2df6030f7e7c8
+          name: page2
+          type: DEPENDENT
+          key: page2
+          delay: '0'
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[1]'
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: all
+        - uuid: 7db74a01bbc84a3ea167bd423dae1b47
+          name: page3
+          type: DEPENDENT
+          key: page3
+          delay: '0'
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[2]'
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: all
+        - uuid: 7963ac6bbc064a438ab431d1f9582ca7
+          name: pd1
+          type: DEPENDENT
+          key: pd1
+          delay: '0'
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.performance_data
+          master_item:
+            key: page1
+        - uuid: a90c8847e6e54cb6960dec2711490947
+          name: pd2
+          type: DEPENDENT
+          key: pd2
+          delay: '0'
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.performance_data
+          master_item:
+            key: page2
+        - uuid: a2f67289079a4b81986a1d87ad39b4dd
+          name: pd3
+          type: DEPENDENT
+          key: pd3
+          delay: '0'
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.performance_data
+          master_item:
+            key: page3
+        - uuid: f50dcf8f88914792aa4195ae1bd5ab48
+          name: response_status1
+          type: DEPENDENT
+          key: response_status1
+          delay: '0'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$.details[0].navigation.response_status'
+          master_item:
+            key: pd1
+        - uuid: 5085a5c6c6974c1b986530741b4a0d28
+          name: response_status2
+          type: DEPENDENT
+          key: response_status2
+          delay: '0'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$.details[0].navigation.response_status'
+          master_item:
+            key: pd2
+        - uuid: 1402a13827094064942c738fdbf0ba26
+          name: screen1
+          type: DEPENDENT
+          key: screen1
+          delay: '0'
+          trends: '0'
+          value_type: BINARY
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.screenshot
+          master_item:
+            key: page1
+        - uuid: f2d911b991104b44908c355add23088f
+          name: screen2
+          type: DEPENDENT
+          key: screen2
+          delay: '0'
+          trends: '0'
+          value_type: BINARY
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.screenshot
+          master_item:
+            key: page2
+        - uuid: 26cf49b22d674d0c94c85d00fb29aa26
+          name: screen3
+          type: DEPENDENT
+          key: screen3
+          delay: '0'
+          trends: '0'
+          value_type: BINARY
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.screenshot
+          master_item:
+            key: page3
+      macros:
+        - macro: '{$DOMAIN}'
+          value: www.zabbix.com
+        - macro: '{$PAGES}'
+          value: whats_new_5_0|whats_new_6_0|whats_new_7_0
+        - macro: '{$SCHEMA}'
+          value: https
+      dashboards:
+        - uuid: dea0f2e4ff3b4efc82eb5363c62efb11
+          name: steps
+          pages:
+            - widgets:
+                - type: itemhistory
+                  name: step1
+                  width: '23'
+                  height: '7'
+                  fields:
+                    - type: ITEM
+                      name: columns.0.itemid
+                      value:
+                        host: 'example 2 - get stats from 3 pages'
+                        key: screen1
+                    - type: STRING
+                      name: columns.0.name
+                      value: page1
+                    - type: INTEGER
+                      name: columns.0.show_thumbnail
+                      value: '1'
+                    - type: STRING
+                      name: reference
+                      value: JSVCH
+                    - type: INTEGER
+                      name: show_lines
+                      value: '5'
+                    - type: INTEGER
+                      name: show_timestamp
+                      value: '1'
+                - type: itemhistory
+                  name: step2
+                  x: '23'
+                  width: '25'
+                  height: '7'
+                  fields:
+                    - type: ITEM
+                      name: columns.0.itemid
+                      value:
+                        host: 'example 2 - get stats from 3 pages'
+                        key: screen2
+                    - type: STRING
+                      name: columns.0.name
+                      value: page2
+                    - type: INTEGER
+                      name: columns.0.show_thumbnail
+                      value: '1'
+                    - type: STRING
+                      name: reference
+                      value: ZGQKY
+                    - type: INTEGER
+                      name: show_lines
+                      value: '5'
+                    - type: INTEGER
+                      name: show_timestamp
+                      value: '1'
+                - type: itemhistory
+                  name: step3
+                  x: '48'
+                  width: '24'
+                  height: '7'
+                  fields:
+                    - type: ITEM
+                      name: columns.0.itemid
+                      value:
+                        host: 'example 2 - get stats from 3 pages'
+                        key: screen3
+                    - type: STRING
+                      name: columns.0.name
+                      value: page3
+                    - type: INTEGER
+                      name: columns.0.show_thumbnail
+                      value: '1'
+                    - type: STRING
+                      name: reference
+                      value: MEOYT
+                    - type: INTEGER
+                      name: show_lines
+                      value: '5'
+                    - type: INTEGER
+                      name: show_timestamp
+                      value: '1'
+    - uuid: 5db4859193fc49cca9ea2f2f71c8bb3e
+      template: 'example 3 - monitor all unique links in landing page'
+      name: 'example 3 - monitor all unique links in landing page'
+      groups:
+        - name: Templates/Modules
+      items:
+        - uuid: 66a7988e18eb4638879243cbfd0aaf78
+          name: landing
+          type: BROWSER
+          key: landing
+          delay: 1d
+          trends: '0'
+          value_type: TEXT
+          params: |
+            var params = JSON.parse(value);
+            function uniq(a) {
+                return a.sort().filter(function (item, pos, ary) {
+                    return !pos || item != ary[pos - 1];
+                });
+            }
+            var browser = new Browser(Browser.chromeOptions());
+            browser.navigate(params.schema + '://' + params.domain);
+            var el = browser.findElements("link text", "");
+            var links = [];
+            for (var n = 0; n < el.length; n++) { links.push(el[n].getAttribute('href')); }
+            links = uniq(links);
+            var lld = [];
+            for (i = 0; i < links.length; i++) {
+                if (links[i].match(/^http.*/)) {
+                    var row = {};
+                    row["{#URL}"] = links[i];
+                    lld.push(row);
+                }
+            }
+            return JSON.stringify(lld);
+          parameters:
+            - name: domain
+              value: '{$DOMAIN}'
+            - name: schema
+              value: '{$SCHEMA}'
+      discovery_rules:
+        - uuid: 1fdb16e81f1d43f1a4bd813385c3d763
+          name: page
+          type: DEPENDENT
+          key: page
+          delay: '0'
+          item_prototypes:
+            - uuid: 706c151d749e4f0b9fd70d53065d0865
+              name: '{#URL}'
+              type: BROWSER
+              key: 'collectPerfEntries[{#URL}]'
+              delay: 1d
+              trends: '0'
+              value_type: TEXT
+              params: |
+                var params = JSON.parse(value);
+                var browser = new Browser(Browser.chromeOptions());
+                
+                const screenshot = '';
+                browser.setScreenSize(Number(1280), Number(1024))
+                browser.navigate(params.url);
+                browser.collectPerfEntries();
+                screenshot = browser.getScreenshot();
+                const result = browser.getResult();
+                result.screenshot = screenshot;
+                
+                return JSON.stringify(result);
+              parameters:
+                - name: url
+                  value: '{#URL}'
+            - uuid: 3c7a3cbd8ddb4b9aae22699001e69728
+              name: '{#URL} performance data'
+              type: DEPENDENT
+              key: 'pd[{#URL}]'
+              delay: '0'
+              trends: '0'
+              value_type: TEXT
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - $.performance_data
+              master_item:
+                key: 'collectPerfEntries[{#URL}]'
+            - uuid: 02c46354f76d4cc384fc40afd441d21b
+              name: '{#URL} screenshot'
+              type: DEPENDENT
+              key: 'screenshot[{#URL}]'
+              delay: '0'
+              trends: '0'
+              value_type: BINARY
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - $.screenshot
+              master_item:
+                key: 'collectPerfEntries[{#URL}]'
+          master_item:
+            key: landing
+      macros:
+        - macro: '{$DOMAIN}'
+          value: blog.zabbix.com
+        - macro: '{$SCHEMA}'
+          value: https
+    - uuid: 7b60277c56c540a8bc60465a7bc0d55f
+      template: 'example 4 - fill fields and push a button'
+      name: 'example 4 - fill fields and push a button'
+      groups:
+        - name: Templates/Modules
+      items:
+        - uuid: e40cbe28b17641db86e023145f750a9b
+          name: authenticate
+          type: BROWSER
+          key: authenticate
+          delay: 1d
+          trends: '0'
+          value_type: TEXT
+          params: |
+            var browser, result;
+            browser = new Browser(Browser.chromeOptions());
+            browser.setScreenSize(Number(1280), Number(720));
+            screens = [];
+            const screenshot = '';
+            try {
+            browser.navigate("https://github.com/login");
+            screens.push(browser.getScreenshot());
+            
+            // enter username
+            var el = browser.findElement("xpath", "//{$USER:1}[@{$USER:2}='{$USER:3}']");
+            if (el === null) {throw Error("cannot find name input field");}
+            el.sendKeys("{$USER:4}");
+            screens.push(browser.getScreenshot());
+            
+            // enter password
+            el = browser.findElement("xpath", "//{$PASS:1}[@{$PASS:2}='{$PASS:3}']");
+            if (el === null) { throw Error("cannot find password input field"); }
+            el.sendKeys("{$PASS:4}");
+            screens.push(browser.getScreenshot());
+            
+            // login
+            el = browser.findElement("xpath", "//input[@name='commit']");
+            if (el === null) { throw Error("cannot find login button"); }
+            el.click();
+            screens.push(browser.getScreenshot());
+            
+            }
+            catch (err) {
+                if (!(err instanceof BrowserError)) {
+                    browser.setError(err.message);
+                }
+                result = browser.getResult();
+                result.error.screenshot = browser.getScreenshot();
+            }
+            finally {
+                return JSON.stringify(screens);
+            }
+        - uuid: 3b8d904e56bd4ac5836870da57515ee6
+          name: step1
+          type: DEPENDENT
+          key: step1
+          delay: '0'
+          trends: '0'
+          value_type: BINARY
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[0]'
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: authenticate
+        - uuid: bdc3322d3a8a40fcaf72874e8e98aade
+          name: step2
+          type: DEPENDENT
+          key: step2
+          delay: '0'
+          trends: '0'
+          value_type: BINARY
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[1]'
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: authenticate
+        - uuid: 373431d76f3e4924aadda9c4b524f115
+          name: step3
+          type: DEPENDENT
+          key: step3
+          delay: '0'
+          trends: '0'
+          value_type: BINARY
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[2]'
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: authenticate
+        - uuid: 61098878a9d94f7f8ded89edca5296cb
+          name: step4
+          type: DEPENDENT
+          key: step4
+          delay: '0'
+          trends: '0'
+          value_type: BINARY
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[3]'
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: authenticate
+        - uuid: a208a0828ab044cb91babdcf05ca05c1
+          name: step5
+          type: DEPENDENT
+          key: step5
+          delay: '0'
+          trends: '0'
+          value_type: BINARY
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[4]'
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: authenticate
+        - uuid: 8e1ae1b5cbf243e8a595bb029c8239ad
+          name: step6
+          type: DEPENDENT
+          key: step6
+          delay: '0'
+          trends: '0'
+          value_type: BINARY
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[5]'
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: authenticate
+      macros:
+        - macro: '{$AUTH}'
+          value: 'https://github.com/login'
+        - macro: '{$PASS:1}'
+          value: input
+          description: 'HTML tag name which holds password'
+        - macro: '{$PASS:2}'
+          value: id
+          description: 'which attribute to seek'
+        - macro: '{$PASS:3}'
+          value: password
+          description: 'attribute value'
+        - macro: '{$PASS:4}'
+          value: 'hello world'
+          description: 'enter password'
+        - macro: '{$SCHEMA}'
+          value: https
+        - macro: '{$USER:1}'
+          value: input
+          description: 'HTML tag name which holds username'
+        - macro: '{$USER:2}'
+          value: id
+          description: 'which attribute to seek'
+        - macro: '{$USER:3}'
+          value: login_field
+          description: 'attribute value'
+        - macro: '{$USER:4}'
+          value: 'my username'
+          description: 'fill the field'
+      dashboards:
+        - uuid: 52ff50e5539d4ba683573e8e2c213155
+          name: screen
+          pages:
+            - widgets:
+                - type: itemhistory
+                  name: '1'
+                  width: '17'
+                  height: '8'
+                  fields:
+                    - type: ITEM
+                      name: columns.0.itemid
+                      value:
+                        host: 'example 4 - fill fields and push a button'
+                        key: step1
+                    - type: STRING
+                      name: columns.0.name
+                      value: screen1
+                    - type: INTEGER
+                      name: columns.0.show_thumbnail
+                      value: '1'
+                    - type: STRING
+                      name: reference
+                      value: ZPYUH
+                    - type: INTEGER
+                      name: show_lines
+                      value: '5'
+                    - type: INTEGER
+                      name: show_timestamp
+                      value: '1'
+                - type: itemhistory
+                  name: '2'
+                  x: '17'
+                  width: '18'
+                  height: '8'
+                  fields:
+                    - type: ITEM
+                      name: columns.0.itemid
+                      value:
+                        host: 'example 4 - fill fields and push a button'
+                        key: step2
+                    - type: STRING
+                      name: columns.0.name
+                      value: screen1
+                    - type: INTEGER
+                      name: columns.0.show_thumbnail
+                      value: '1'
+                    - type: STRING
+                      name: reference
+                      value: VBVQY
+                    - type: INTEGER
+                      name: show_lines
+                      value: '5'
+                    - type: INTEGER
+                      name: show_timestamp
+                      value: '1'
+                - type: itemhistory
+                  name: '3'
+                  x: '35'
+                  width: '19'
+                  height: '8'
+                  fields:
+                    - type: ITEM
+                      name: columns.0.itemid
+                      value:
+                        host: 'example 4 - fill fields and push a button'
+                        key: step3
+                    - type: STRING
+                      name: columns.0.name
+                      value: screen1
+                    - type: INTEGER
+                      name: columns.0.show_thumbnail
+                      value: '1'
+                    - type: STRING
+                      name: reference
+                      value: JWTDD
+                    - type: INTEGER
+                      name: show_lines
+                      value: '5'
+                    - type: INTEGER
+                      name: show_timestamp
+                      value: '1'
+                - type: itemhistory
+                  name: '4'
+                  x: '54'
+                  width: '18'
+                  height: '8'
+                  fields:
+                    - type: ITEM
+                      name: columns.0.itemid
+                      value:
+                        host: 'example 4 - fill fields and push a button'
+                        key: step4
+                    - type: STRING
+                      name: columns.0.name
+                      value: screen4
+                    - type: INTEGER
+                      name: columns.0.show_thumbnail
+                      value: '1'
+                    - type: STRING
+                      name: reference
+                      value: KSAIB
+                    - type: INTEGER
+                      name: show_lines
+                      value: '5'
+                    - type: INTEGER
+                      name: show_timestamp
+                      value: '1'
+    - uuid: 846a0613d8eb4561b41038e76dadc375
+      template: 'example 5 - search for string'
+      name: 'example 5 - search for string'
+      groups:
+        - name: Templates/Modules
+      items:
+        - uuid: e9cb2f5572ab4ba0be5bf30e40c992f7
+          name: landing
+          type: BROWSER
+          key: landing
+          delay: 1d
+          trends: '0'
+          value_type: TEXT
+          params: |
+            var params = JSON.parse(value);
+            function uniq(a) {
+                return a.sort().filter(function (item, pos, ary) {
+                    return !pos || item != ary[pos - 1];
+                });
+            }
+            var browser = new Browser(Browser.chromeOptions());
+            browser.navigate(params.schema + '://' + params.domain);
+            var el = browser.findElements("link text", "");
+            var links = [];
+            for (var n = 0; n < el.length; n++) { links.push(el[n].getAttribute('href')); }
+            links = uniq(links);
+            var lld = [];
+            for (i = 0; i < links.length; i++) {
+                if (links[i].match(/^http.*/)) {
+                    var row = {};
+                    row["{#URL}"] = links[i];
+                    lld.push(row);
+                }
+            }
+            return JSON.stringify(lld);
+          parameters:
+            - name: domain
+              value: '{$DOMAIN}'
+            - name: schema
+              value: '{$SCHEMA}'
+      discovery_rules:
+        - uuid: 6eedb8fff43a42bb8198a45bc53d5f66
+          name: page
+          type: DEPENDENT
+          key: page
+          delay: '0'
+          item_prototypes:
+            - uuid: 994ba1f641134452a5525461c1fb1332
+              name: 'count of keyword "the " in {#URL}'
+              type: DEPENDENT
+              key: 'count.of[the,{#URL}]'
+              delay: '0'
+              preprocessing:
+                - type: JAVASCRIPT
+                  parameters:
+                    - 'return value.match(/the /g).length;'
+              master_item:
+                key: 'src[{#URL}]'
+            - uuid: 7b5af67514a246efb13c7bdcbcf594e5
+              name: 'seek for "Zabbix API" in {#URL}'
+              type: DEPENDENT
+              key: 'seek[Zabbix API,{#URL}]'
+              delay: '0'
+              valuemap:
+                name: keyword
+              preprocessing:
+                - type: JAVASCRIPT
+                  parameters:
+                    - 'return value.match(/Zabbix API/g) ? 1 : 0;'
+              master_item:
+                key: 'src[{#URL}]'
+            - uuid: be9c44ff66644418b98beea950d74ef2
+              name: '{#URL} source'
+              type: DEPENDENT
+              key: 'src[{#URL}]'
+              delay: '0'
+              trends: '0'
+              value_type: TEXT
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - $.source
+              master_item:
+                key: 'url[{#URL}]'
+            - uuid: c7f2cbd585ca4bd8a9a931820b464f92
+              name: '{#URL}'
+              type: BROWSER
+              key: 'url[{#URL}]'
+              delay: 1d
+              trends: '0'
+              value_type: TEXT
+              params: |
+                var params = JSON.parse(value);
+                var browser = new Browser(Browser.chromeOptions());
+                browser.navigate(params.url);
+                
+                browser.collectPerfEntries();
+                const result = browser.getResult();
+                var source = browser.getPageSource();
+                
+                return JSON.stringify({
+                        'result':result,
+                        'source':source
+                });
+              parameters:
+                - name: url
+                  value: '{#URL}'
+          master_item:
+            key: landing
+      macros:
+        - macro: '{$DOMAIN}'
+          value: blog.zabbix.com
+        - macro: '{$SCHEMA}'
+          value: https
+      valuemaps:
+        - uuid: d790c69d47c94a319aedca345e6dc1c9
+          name: keyword
+          mappings:
+            - value: '1'
+              newvalue: found
+            - value: '0'
+              newvalue: 'not found'
